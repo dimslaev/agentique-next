@@ -1,0 +1,46 @@
+from datetime import UTC, datetime
+
+from pgvector.sqlalchemy import Vector
+from sqlalchemy import Column, DateTime, JSON
+from sqlmodel import Field, SQLModel
+
+
+def get_datetime_utc() -> datetime:
+    return datetime.now(UTC)
+
+
+class ArticleBase(SQLModel):
+    title: str
+    source: str
+    source_type: str
+    url: str | None = None
+    published_at: datetime | None = None
+    score: int | None = None
+    summary: str | None = None
+    categories: list[str] = Field(
+        default_factory=list, sa_column=Column(JSON, nullable=True)
+    )
+    kind: str | None = None
+
+
+class Article(ArticleBase, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    content: str | None = Field(default="")
+    # 256-dim model2vec vectors; nullable until the import script runs
+    embedding: list[float] | None = Field(
+        default=None, sa_column=Column(Vector(256), nullable=True)
+    )
+    created_at: datetime | None = Field(
+        default_factory=get_datetime_utc,
+        sa_type=DateTime(timezone=True),  # type: ignore
+    )
+
+
+class ArticlePublic(ArticleBase):
+    id: int
+    created_at: datetime | None = None
+
+
+class ArticlesPublic(SQLModel):
+    data: list[ArticlePublic]
+    count: int
