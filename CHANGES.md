@@ -4,6 +4,27 @@ Changes made on top of `fastapi/full-stack-fastapi-template`. Upstream files are
 
 ---
 
+## 2026-06-27 (pipeline migration)
+
+### New files — no upstream conflict
+| File | Why |
+|---|---|
+| `baml_src/` | BAML prompt sources (copied from temp/source/baml_src/, Python generator added) |
+| `backend/baml_client/` | BAML-generated Python/pydantic client — committed per project convention |
+| `backend/pipeline/` | Python ingestion pipeline (replaces TypeScript pipeline) |
+| `backend/app/alembic/versions/b7c8d9e0f1a2_add_scored_url_table.py` | Creates `scored_url` table for URL dedup |
+
+### Modified upstream files — watch on merge
+| File | Change | Conflict risk |
+|---|---|---|
+| `backend/app/models_agentique.py` | Added `ScoredUrl` table model | Low — additive |
+| `backend/pyproject.toml` | Added `baml-py`, `trafilatura`, `feedparser`, `dnspython`, `regex` deps | Low — additive |
+| `backend/Dockerfile` | Install supercronic; COPY baml_client + pipeline into image | Low — additive |
+| `compose.yml` | Added `pipeline` service (supercronic, daily 04:00) | Low — additive service |
+| `uv.lock` | Regenerated for new deps | Mechanical — re-run `uv lock` after merge |
+
+---
+
 ## 2026-06-27
 
 ### New files — no upstream conflict

@@ -21,6 +21,11 @@ dependencies = [
     "pwdlib[argon2,bcrypt]>=0.3.0",
     "pgvector>=0.3.0",
     "model2vec>=0.4.0",
+    "baml-py>=0.223.0",
+    "trafilatura>=2.0.0",
+    "feedparser>=6.0.0",
+    "dnspython>=2.6.0",
+    "regex>=2024.0.0",
 ]
 
 [dependency-groups]
