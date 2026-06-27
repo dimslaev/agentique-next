@@ -8,7 +8,7 @@ export type ArticlePublic = {
     published_at?: (string | null);
     score?: (number | null);
     summary?: (string | null);
-    categories?: Array<string>;
+    categories?: Array<(string)>;
     kind?: (string | null);
     id: number;
     created_at?: (string | null);
@@ -18,23 +18,6 @@ export type ArticlesPublic = {
     data: Array<ArticlePublic>;
     count: number;
 };
-
-export type ArticlesReadArticlesData = {
-    limit?: number;
-    since?: (string | null);
-    minScore?: (number | null);
-    category?: (string | null);
-    kind?: (string | null);
-};
-
-export type ArticlesReadArticlesResponse = ArticlesPublic;
-
-export type ArticlesSearchArticlesData = {
-    q: string;
-    limit?: number;
-};
-
-export type ArticlesSearchArticlesResponse = ArticlesPublic;
 
 export type Body_login_login_access_token = {
     grant_type?: (string | null);
@@ -79,13 +62,6 @@ export type Message = {
 export type NewPassword = {
     token: string;
     new_password: string;
-};
-
-export type PrivateUserCreate = {
-    email: string;
-    password: string;
-    full_name: string;
-    is_verified?: boolean;
 };
 
 export type Token = {
@@ -149,6 +125,23 @@ export type ValidationError = {
     };
 };
 
+export type ArticlesReadArticlesData = {
+    category?: (string | null);
+    kind?: (string | null);
+    limit?: number;
+    minScore?: (number | null);
+    since?: (string | null);
+};
+
+export type ArticlesReadArticlesResponse = (ArticlesPublic);
+
+export type ArticlesSearchArticlesData = {
+    limit?: number;
+    q: string;
+};
+
+export type ArticlesSearchArticlesResponse = (ArticlesPublic);
+
 export type ItemsReadItemsData = {
     limit?: number;
     skip?: number;
@@ -206,12 +199,6 @@ export type LoginRecoverPasswordHtmlContentData = {
 };
 
 export type LoginRecoverPasswordHtmlContentResponse = (string);
-
-export type PrivateCreateUserData = {
-    requestBody: PrivateUserCreate;
-};
-
-export type PrivateCreateUserResponse = (UserPublic);
 
 export type UsersReadUsersData = {
     limit?: number;
