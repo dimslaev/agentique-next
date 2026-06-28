@@ -58,6 +58,7 @@ services:
     env_file:
       - .env
     environment:
+      - PROJECT_NAME=${PROJECT_NAME}
       - DOMAIN=${DOMAIN}
       - FRONTEND_HOST=${FRONTEND_HOST?Variable not set}
       - ENVIRONMENT=${ENVIRONMENT}
@@ -91,6 +92,7 @@ services:
     env_file:
       - .env
     environment:
+      - PROJECT_NAME=${PROJECT_NAME}
       - DOMAIN=${DOMAIN}
       - FRONTEND_HOST=${FRONTEND_HOST?Variable not set}
       - ENVIRONMENT=${ENVIRONMENT}

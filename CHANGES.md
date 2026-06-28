@@ -7,6 +7,11 @@ Changes made on top of `fastapi/full-stack-fastapi-template`. Upstream files are
 ## 2026-06-28
 
 - `.env` — Deleted and added to `.gitignore`. In upstream it's tracked and used as an example.
+- `compose.yml` — Frontend Traefik rule changed from `Host(\`dashboard.${DOMAIN}\`)` to `Host(\`${DOMAIN}\`)` so the app is served at the root domain. Added `PROJECT_NAME` to prestart and backend service environments.
+- `deploy-production.yml` — Split into build job (GitHub-hosted runner, pushes to ghcr.io) and deploy job (self-hosted runner, pulls and restarts). Added buildx + GHA layer caching. Added all missing compose env vars.
+- GitHub secrets — Updated `DOCKER_IMAGE_BACKEND`, `DOCKER_IMAGE_FRONTEND` to ghcr.io URLs; `BACKEND_CORS_ORIGINS` and `FRONTEND_HOST` updated to `https://next.agentique.ch`; added `STACK_NAME_PRODUCTION=agentique-next`.
+- `deploy-staging.yml` — Reverted to upstream and disabled (workflow_dispatch only); the VPS has one environment.
+- `deploy-production.yml` — Trigger changed from `release: published` to `push: [master]`; added `touch .env` step; added all missing compose env vars (`POSTGRES_USER`, `POSTGRES_DB`, `POSTGRES_PORT`, `POSTGRES_SERVER`, `DOCKER_IMAGE_BACKEND`, `DOCKER_IMAGE_FRONTEND`, `FRONTEND_HOST`, `BACKEND_CORS_ORIGINS`, `BAML_LOG`).
 
 ### Disabled upstream CI workflows
 
