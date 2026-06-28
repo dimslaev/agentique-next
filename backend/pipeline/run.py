@@ -11,7 +11,7 @@ from model2vec import StaticModel
 from sqlmodel import Session, create_engine, select
 
 from app.models_agentique import Article, ScoredUrl
-from baml_client import b
+from baml_client.sync_client import b
 from baml_client.types import ArticleInput, ExistingArticle
 from pipeline.sources.ainews import fetch_ai_news
 from pipeline.sources.extract_content import re_extract_full_content
