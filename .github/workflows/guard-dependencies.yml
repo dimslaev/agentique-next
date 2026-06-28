@@ -1,11 +1,10 @@
 name: Guard Dependencies
 
+# Disabled in this fork: auto-closes dependency PRs from non-org members, only
+# relevant with external contributors. Manual-only so it stays merge-clean with upstream.
+# Original trigger: pull_request_target on master, paths pyproject.toml / uv.lock.
 on:
-  pull_request_target: # zizmor: ignore[dangerous-triggers] -- This workflow only reads context.payload metadata, never checks out PR code
-    branches: [master]
-    paths:
-      - pyproject.toml
-      - uv.lock
+  workflow_dispatch:
 
 permissions:
   contents: read

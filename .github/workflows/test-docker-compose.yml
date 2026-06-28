@@ -1,10 +1,10 @@
 name: Test Docker Compose
 
+# Disabled in this fork: Playwright already builds and exercises the full stack,
+# so this smoke test is redundant. Manual-only so it stays merge-clean with upstream.
+# Original triggers: push on master; pull_request.
 on:
-  push:
-    branches:
-      - master
-  pull_request:
+  workflow_dispatch:
 permissions: {}
 
 jobs:

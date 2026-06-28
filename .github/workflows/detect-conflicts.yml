@@ -1,8 +1,9 @@
 name: "Conflict detector"
+# Disabled in this fork: auto-labels conflicting PRs, only useful with many
+# concurrent contributors. Manual-only so it stays merge-clean with upstream.
+# Original triggers: push; pull_request_target (synchronize).
 on:
-  push:
-  pull_request_target: # zizmor: ignore[dangerous-triggers]
-    types: [synchronize]
+  workflow_dispatch:
 
 permissions: {}
 

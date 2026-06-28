@@ -1,9 +1,11 @@
 name: Smokeshow
 
+# Disabled in this fork: uploads a coverage badge to smokeshow.com (needs
+# SMOKESHOW_AUTH_KEY). Coverage is already enforced in Test Backend (--fail-under=90).
+# Manual-only so it stays merge-clean with upstream.
+# Original trigger: workflow_run after [Test Backend] completed.
 on:
-  workflow_run: # zizmor: ignore[dangerous-triggers]
-    workflows: [Test Backend]
-    types: [completed]
+  workflow_dispatch:
 
 permissions: {}
 

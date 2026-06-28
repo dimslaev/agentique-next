@@ -1,11 +1,10 @@
 name: Latest Changes
 
+# Disabled in this fork: tiangolo's changelog bot (needs LATEST_CHANGES secret,
+# commits to release-notes.md we don't maintain). Manual-only so it stays
+# merge-clean with upstream.
+# Original trigger also included: pull_request_target on master (closed).
 on:
-  pull_request_target: # zizmor: ignore[dangerous-triggers]
-    branches:
-      - master
-    types:
-      - closed
   workflow_dispatch:
     inputs:
       number:

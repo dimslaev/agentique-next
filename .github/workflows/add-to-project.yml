@@ -1,11 +1,10 @@
 name: Add to Project
 
+# Disabled in this fork: targets the fastapi org project board and needs a
+# PROJECTS_TOKEN we don't have. Manual-only so it stays merge-clean with upstream.
+# Original triggers: pull_request_target; issues (opened, reopened).
 on:
-  pull_request_target: # zizmor: ignore[dangerous-triggers]
-  issues:
-    types:
-      - opened
-      - reopened
+  workflow_dispatch:
 
 permissions: {}
 
