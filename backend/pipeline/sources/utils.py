@@ -5,7 +5,7 @@ from datetime import UTC, datetime
 
 import httpx
 
-HN_PREFIX_RE = re.compile(r'^(?:Show|Launch|Ask|Tell) HN:\s*', re.IGNORECASE)
+HN_PREFIX_RE = re.compile(r"^(?:Show|Launch|Ask|Tell) HN:\s*", re.IGNORECASE)
 WINDOW_HOURS = 168
 FETCH_TIMEOUT_SECS = 15.0
 
@@ -28,6 +28,7 @@ def is_within_window(date_str: str | None, window_hours: int = WINDOW_HOURS) -> 
         return True
     try:
         from email.utils import parsedate_to_datetime
+
         try:
             published = parsedate_to_datetime(date_str)
         except Exception:

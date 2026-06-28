@@ -1,4 +1,5 @@
 """Pipeline entry point. Run with: python -m pipeline.run"""
+
 from __future__ import annotations
 
 import os
@@ -94,6 +95,7 @@ def run_pipeline() -> None:
 
 # ─── Step 01 ────────────────────────────────────────────────────────────────
 
+
 def _fetch_source(fetcher, label: str) -> list[dict]:
     articles = fetcher()
     if not articles:
@@ -103,7 +105,10 @@ def _fetch_source(fetcher, label: str) -> list[dict]:
 
 # ─── Step 02 ────────────────────────────────────────────────────────────────
 
-def _filter_known_urls(session: Session, articles: list[dict], label: str) -> list[dict]:
+
+def _filter_known_urls(
+    session: Session, articles: list[dict], label: str
+) -> list[dict]:
     if not articles:
         return []
     all_urls = [a["url"] for a in articles]
@@ -115,10 +120,16 @@ def _filter_known_urls(session: Session, articles: list[dict], label: str) -> li
         session.exec(select(ScoredUrl.url).where(ScoredUrl.url.in_(all_urls))).all()
     )
 
-    fresh = [a for a in articles if a["url"] not in existing_urls and a["url"] not in scored_urls]
+    fresh = [
+        a
+        for a in articles
+        if a["url"] not in existing_urls and a["url"] not in scored_urls
+    ]
 
     if existing_urls or scored_urls:
-        log(f"  Filtered {len(existing_urls)} known + {len(scored_urls)} already-scored URLs")
+        log(
+            f"  Filtered {len(existing_urls)} known + {len(scored_urls)} already-scored URLs"
+        )
     if not fresh:
         log(f"  No new articles from {label}")
         return []
@@ -127,6 +138,7 @@ def _filter_known_urls(session: Session, articles: list[dict], label: str) -> li
 
 
 # ─── Step 02b ───────────────────────────────────────────────────────────────
+
 
 def _filter_dead_domains(articles: list[dict], label: str) -> list[dict]:
     if not articles:
@@ -159,6 +171,7 @@ def _filter_dead_domains(articles: list[dict], label: str) -> list[dict]:
 
 
 # ─── Step 03 ────────────────────────────────────────────────────────────────
+
 
 def _dedup_semantic(session: Session, articles: list[dict], label: str) -> list[dict]:
     if not articles:
@@ -198,6 +211,7 @@ def _dedup_semantic(session: Session, articles: list[dict], label: str) -> list[
 
 # ─── Step 04 ────────────────────────────────────────────────────────────────
 
+
 def _score_articles(session: Session, articles: list[dict]) -> list[dict]:
     if not articles:
         return []
@@ -207,7 +221,7 @@ def _score_articles(session: Session, articles: list[dict]) -> list[dict]:
     BATCH = 5
     all_scores: list[dict] = []
     for i in range(0, len(articles), BATCH):
-        batch_inputs = [_to_baml_input(a) for a in articles[i:i + BATCH]]
+        batch_inputs = [_to_baml_input(a) for a in articles[i : i + BATCH]]
         result = b.ScoreArticles(batch_inputs)
         all_scores.extend({"url": r.url, "score": r.score} for r in result)
         log(f"    batch {i // BATCH + 1}/{(len(articles) + BATCH - 1) // BATCH} done")
@@ -235,6 +249,7 @@ def _score_articles(session: Session, articles: list[dict]) -> list[dict]:
 
 # ─── Step 05 ────────────────────────────────────────────────────────────────
 
+
 def _insert_articles(session: Session, scored: list[dict]) -> list[dict]:
     if not scored:
         return []
@@ -252,10 +267,13 @@ def _insert_articles(session: Session, scored: list[dict]) -> list[dict]:
         if item.get("published_date"):
             try:
                 from email.utils import parsedate_to_datetime
+
                 try:
                     pub_at = parsedate_to_datetime(item["published_date"])
                 except Exception:
-                    pub_at = datetime.fromisoformat(item["published_date"].replace("Z", "+00:00"))
+                    pub_at = datetime.fromisoformat(
+                        item["published_date"].replace("Z", "+00:00")
+                    )
             except Exception:
                 pass
 
@@ -280,6 +298,7 @@ def _insert_articles(session: Session, scored: list[dict]) -> list[dict]:
 
 # ─── Step 06 ────────────────────────────────────────────────────────────────
 
+
 def _improve_titles(session: Session, inserted: list[dict]) -> None:
     if not inserted:
         return
@@ -297,7 +316,7 @@ def _improve_titles(session: Session, inserted: list[dict]) -> None:
             if not sanitized or sanitized == item["title"]:
                 continue
             if item["source"].lower() in sanitized.lower():
-                log(f"  Skip rewrite #{art_id} (source name leaked): \"{sanitized}\"")
+                log(f'  Skip rewrite #{art_id} (source name leaked): "{sanitized}"')
                 continue
             old_title = item["title"]
             article = session.get(Article, art_id)
@@ -306,12 +325,13 @@ def _improve_titles(session: Session, inserted: list[dict]) -> None:
                 session.add(article)
                 session.commit()
             item["title"] = sanitized
-            log(f"  Improved title #{art_id}: \"{old_title}\" → \"{sanitized}\"")
+            log(f'  Improved title #{art_id}: "{old_title}" → "{sanitized}"')
         except Exception as e:
             log(f"  Title improve failed for #{art_id}, continuing: {e}")
 
 
 # ─── Step 07 ────────────────────────────────────────────────────────────────
+
 
 def _extract_full_content(session: Session, inserted: list[dict]) -> list[dict]:
     if not inserted:
@@ -340,6 +360,7 @@ def _extract_full_content(session: Session, inserted: list[dict]) -> list[dict]:
 
 # ─── Step 08 ────────────────────────────────────────────────────────────────
 
+
 def _summarize_and_categorize(session: Session, items: list[dict]) -> list[dict]:
     if not items:
         return []
@@ -356,7 +377,9 @@ def _summarize_and_categorize(session: Session, items: list[dict]) -> list[dict]
 
         try:
             if full_content:
-                result = b.SummarizeAndCategorize(item["title"], full_content[:PROMPT_CONTENT_CAP])
+                result = b.SummarizeAndCategorize(
+                    item["title"], full_content[:PROMPT_CONTENT_CAP]
+                )
                 summary = sanitize_llm_text(result.summary or "")
                 categories = [c.lower() for c in result.categories]
                 if not kind:
@@ -380,14 +403,16 @@ def _summarize_and_categorize(session: Session, items: list[dict]) -> list[dict]
                 article.kind = kind
             session.add(article)
 
-        processed.append({
-            "id": art_id,
-            "url": item["url"],
-            "title": item["title"],
-            "score": item["score"],
-            "summary": summary,
-            "categories": categories,
-        })
+        processed.append(
+            {
+                "id": art_id,
+                "url": item["url"],
+                "title": item["title"],
+                "score": item["score"],
+                "summary": summary,
+                "categories": categories,
+            }
+        )
 
     session.commit()
     log("  Done summarizing and categorizing")
@@ -395,6 +420,7 @@ def _summarize_and_categorize(session: Session, items: list[dict]) -> list[dict]
 
 
 # ─── Step 09 ────────────────────────────────────────────────────────────────
+
 
 def _embed_articles(session: Session, items: list[dict]) -> None:
     if not items:
@@ -405,7 +431,11 @@ def _embed_articles(session: Session, items: list[dict]) -> None:
     for item in items:
         art_id = item["id"]
         try:
-            text = f"{item['title']}\n\n{item['summary']}" if item.get("summary") else item["title"]
+            text = (
+                f"{item['title']}\n\n{item['summary']}"
+                if item.get("summary")
+                else item["title"]
+            )
             vec = _embed(text)
             article = session.get(Article, art_id)
             if article:

@@ -21,7 +21,9 @@ BLOCKER_PATTERNS: list[re.Pattern] = [
     re.compile(r"sign\s*in\s+to\s+(?:continue|read|access)", re.IGNORECASE),
     re.compile(r"log\s*in\s+to\s+(?:continue|read|access)", re.IGNORECASE),
     re.compile(r"subscribe\s+to\s+(?:continue|read|access|unlock)", re.IGNORECASE),
-    re.compile(r"create\s+an?\s+account\s+to\s+(?:continue|read|access)", re.IGNORECASE),
+    re.compile(
+        r"create\s+an?\s+account\s+to\s+(?:continue|read|access)", re.IGNORECASE
+    ),
     re.compile(r"enable\s+javascript\s+to\s+(?:continue|view|use)", re.IGNORECASE),
     re.compile(r"javascript\s+is\s+(?:disabled|required)", re.IGNORECASE),
     re.compile(r"access\s+denied", re.IGNORECASE),
@@ -32,6 +34,7 @@ BLOCKER_PATTERNS: list[re.Pattern] = [
 def _should_skip(url: str) -> bool:
     try:
         from urllib.parse import urlparse
+
         host = urlparse(url).hostname or ""
         return any(host == d or host.endswith(f".{d}") for d in SKIP_DOMAINS)
     except Exception:
@@ -77,7 +80,9 @@ def _extract_one_full(url: str, idx: int, total: int) -> tuple[str, str]:
     log(f"    [{idx + 1}/{total}] Fetching: {url}")
     html = _fetch_html(url)
     text = _extract_text(html)
-    log(f"    [{idx + 1}/{total}] {'OK (' + str(len(text)) + ' chars)' if text else 'no content'}: {url}")
+    log(
+        f"    [{idx + 1}/{total}] {'OK (' + str(len(text)) + ' chars)' if text else 'no content'}: {url}"
+    )
     return url, text
 
 
@@ -92,7 +97,9 @@ def extract_content(articles: list[dict]) -> list[dict]:
 
     snippet_map: dict[str, str] = {}
     with ThreadPoolExecutor(max_workers=CONCURRENCY) as executor:
-        futures = {executor.submit(_extract_one_snippet, url): url for url in unique_urls}
+        futures = {
+            executor.submit(_extract_one_snippet, url): url for url in unique_urls
+        }
         for future in as_completed(futures):
             try:
                 url, text = future.result()

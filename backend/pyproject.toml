@@ -78,6 +78,7 @@ keep-runtime-typing = true
 
 [tool.coverage.run]
 source = ["app"]
+omit = ["app/alembic/*"]
 dynamic_context = "test_function"
 
 [tool.coverage.report]

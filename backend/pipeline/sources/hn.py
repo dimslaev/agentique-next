@@ -12,10 +12,10 @@ HN_ITEM = "https://hacker-news.firebaseio.com/v0/item"
 HN_FETCH_LIMIT = 200
 
 HN_AI_KEYWORDS = re.compile(
-    r'\b(ai|llm|gpt|claude|gemini|llama|openai|anthropic|deepseek|mistral|opencode|'
-    r'tokens|transformer|diffusion|machine.?learning|deep.?learning|neural.?net|'
-    r'language.?model|artificial.?intelligen|stable.?diffusion|midjourney|copilot|'
-    r'chatbot|rag|fine.?tun|embedding|token|lora|rlhf|gguf|ollama|hugging.?face)\b',
+    r"\b(ai|llm|gpt|claude|gemini|llama|openai|anthropic|deepseek|mistral|opencode|"
+    r"tokens|transformer|diffusion|machine.?learning|deep.?learning|neural.?net|"
+    r"language.?model|artificial.?intelligen|stable.?diffusion|midjourney|copilot|"
+    r"chatbot|rag|fine.?tun|embedding|token|lora|rlhf|gguf|ollama|hugging.?face)\b",
     re.IGNORECASE,
 )
 
@@ -49,21 +49,30 @@ def fetch_hn() -> list[dict]:
         if not HN_AI_KEYWORDS.search(item["title"]):
             continue
         pub_date = (
-            __import__("datetime").datetime.fromtimestamp(
+            __import__("datetime")
+            .datetime.fromtimestamp(
                 item["time"], tz=__import__("datetime").timezone.utc
-            ).isoformat()
-            if item.get("time") else None
+            )
+            .isoformat()
+            if item.get("time")
+            else None
         )
         if not is_within_window(pub_date):
             continue
-        articles.append({
-            "title": clean_title(item["title"]),
-            "url": item.get("url") or f"https://news.ycombinator.com/item?id={item['id']}",
-            "content": "",
-            "published_date": pub_date or __import__("datetime").datetime.now(__import__("datetime").timezone.utc).isoformat(),
-            "source": "Hacker News",
-            "source_type": "hackerNews",
-        })
+        articles.append(
+            {
+                "title": clean_title(item["title"]),
+                "url": item.get("url")
+                or f"https://news.ycombinator.com/item?id={item['id']}",
+                "content": "",
+                "published_date": pub_date
+                or __import__("datetime")
+                .datetime.now(__import__("datetime").timezone.utc)
+                .isoformat(),
+                "source": "Hacker News",
+                "source_type": "hackerNews",
+            }
+        )
 
     log(f"Hacker News: {len(articles)} AI-related stories")
     return extract_content(articles)

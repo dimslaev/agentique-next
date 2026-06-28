@@ -15,8 +15,11 @@ _PROXY_URL = os.environ.get("RESIDENTIAL_PROXY_URL")
 if _PROXY_URL:
     try:
         from urllib.parse import urlparse
+
         _u = urlparse(_PROXY_URL)
-        log(f"Substack proxy: {_u.scheme}://{_u.hostname}:{_u.port or '(default)'} (auth: {'yes' if _u.username else 'no'})")
+        log(
+            f"Substack proxy: {_u.scheme}://{_u.hostname}:{_u.port or '(default)'} (auth: {'yes' if _u.username else 'no'})"
+        )
     except Exception:
         log(f"Substack proxy: set but unparseable (len {len(_PROXY_URL)})")
 else:
@@ -37,12 +40,14 @@ def _fetch_feed_xml(url: str, retries: int = 2, backoff: float = 2.0) -> str:
             with httpx.Client(**kwargs) as client:
                 resp = client.get(url)
         except Exception as e:
-            raise RuntimeError(f"fetch failed{'(via proxy)' if use_proxy else ''}: {e}") from e
+            raise RuntimeError(
+                f"fetch failed{'(via proxy)' if use_proxy else ''}: {e}"
+            ) from e
 
         if resp.is_success:
             return resp.text
         if resp.status_code in (403, 429) and attempt < retries and _PROXY_URL:
-            time.sleep(backoff * (2 ** attempt))
+            time.sleep(backoff * (2**attempt))
             continue
         raise RuntimeError(f"Status code {resp.status_code}")
 
@@ -57,7 +62,11 @@ def _fetch_source(source: dict) -> list[dict]:
         xml = _fetch_feed_xml(rss_url)
         feed = feedparser.parse(xml)
         items = feed.get("entries", [])
-        within = [it for it in items if is_within_window(it.get("published") or it.get("updated"))]
+        within = [
+            it
+            for it in items
+            if is_within_window(it.get("published") or it.get("updated"))
+        ]
         log(f"  {name}: {len(within)} in window")
         return [
             {
