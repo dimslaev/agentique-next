@@ -4,6 +4,12 @@ Changes made on top of `fastapi/full-stack-fastapi-template`. Upstream files are
 
 ---
 
+## 2026-06-28
+
+| File   | Change                                                                                    | Conflict risk  |
+| ------ | ----------------------------------------------------------------------------------------- | -------------- |
+| `.env` | Deleted this file and added to gitignore. In upstream it's tracked and used as an example | Low — additive |
+
 ## 2026-06-27 (pipeline migration)
 
 | File                     | Change                                                                  | Conflict risk          |
