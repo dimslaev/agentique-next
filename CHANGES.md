@@ -6,6 +6,9 @@ Changes made on top of `fastapi/full-stack-fastapi-template`. Upstream files are
 
 ## 2026-06-28
 
+- `frontend/src/routes/_layout.tsx` — `beforeLoad` auth guard commented out so unauthenticated users reach the layout. Low conflict risk (small, isolated block).
+- `frontend/src/routes/_layout/index.tsx` — Dashboard component replaced with `ArticlesList`; `useAuth` import removed. Medium conflict risk if upstream extends Dashboard.
+
 - `.env` — Deleted and added to `.gitignore`. In upstream it's tracked and used as an example.
 - `compose.yml` — Frontend Traefik rule changed from `Host(\`dashboard.${DOMAIN}\`)` to `Host(\`${DOMAIN}\`)` so the app is served at the root domain. Added `PROJECT_NAME` to prestart and backend service environments.
 - `deploy-production.yml` — Split into build job (GitHub-hosted runner, pushes to ghcr.io) and deploy job (self-hosted runner, pulls and restarts). Added buildx + GHA layer caching. Added all missing compose env vars.

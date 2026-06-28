@@ -1,26 +1,18 @@
-import { useQuery } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
-import { ArticlesService, type ArticlePublic } from "@/client";
+import { useQuery } from "@tanstack/react-query"
+import { ArticlesService, type ArticlePublic } from "@/client"
 
-export const Route = createFileRoute("/articles")({
-  component: ArticlesPage,
-  head: () => ({
-    meta: [{ title: "Articles - Agentique" }],
-  }),
-});
-
-function ArticlesPage() {
+export function ArticlesList() {
   const { data, isLoading, isError } = useQuery({
     queryKey: ["articles"],
     queryFn: () => ArticlesService.readArticles({ limit: 20 }),
-  });
+  })
 
   if (isLoading) {
     return (
       <div className="max-w-3xl mx-auto py-12 px-4 text-muted-foreground">
         Loading…
       </div>
-    );
+    )
   }
 
   if (isError || !data) {
@@ -28,7 +20,7 @@ function ArticlesPage() {
       <div className="max-w-3xl mx-auto py-12 px-4 text-destructive">
         Failed to load articles.
       </div>
-    );
+    )
   }
 
   return (
@@ -83,5 +75,5 @@ function ArticlesPage() {
         ))}
       </ul>
     </div>
-  );
+  )
 }
