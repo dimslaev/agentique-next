@@ -44,3 +44,9 @@ class ArticlePublic(ArticleBase):
 class ArticlesPublic(SQLModel):
     data: list[ArticlePublic]
     count: int
+
+
+class ScoredUrl(SQLModel, table=True):
+    __tablename__ = "scored_url"
+    url: str = Field(primary_key=True)
+    created_at: datetime = Field(default_factory=get_datetime_utc)

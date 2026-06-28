@@ -2,6 +2,11 @@ FROM python:3.14
 
 ENV PYTHONUNBUFFERED=1
 
+# Install supercronic for container-friendly cron
+RUN SUPERCRONIC_URL=https://github.com/aptible/supercronic/releases/download/v0.2.33/supercronic-linux-amd64 \
+    && curl -fsSL "$SUPERCRONIC_URL" -o /usr/local/bin/supercronic \
+    && chmod +x /usr/local/bin/supercronic
+
 # Install uv
 # Ref: https://docs.astral.sh/uv/guides/integration/docker/#installing-uv
 COPY --from=ghcr.io/astral-sh/uv:0.9.26 /uv /uvx /bin/
@@ -32,6 +37,8 @@ COPY ./backend/scripts /app/backend/scripts
 COPY ./backend/pyproject.toml ./backend/alembic.ini /app/backend/
 
 COPY ./backend/app /app/backend/app
+COPY ./backend/baml_client /app/backend/baml_client
+COPY ./backend/pipeline /app/backend/pipeline
 
 # Sync the project
 # Ref: https://docs.astral.sh/uv/guides/integration/docker/#intermediate-layers

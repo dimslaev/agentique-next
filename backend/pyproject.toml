@@ -21,6 +21,11 @@ dependencies = [
     "pwdlib[argon2,bcrypt]>=0.3.0",
     "pgvector>=0.3.0",
     "model2vec>=0.4.0",
+    "baml-py>=0.223.0",
+    "trafilatura>=2.0.0",
+    "feedparser>=6.0.0",
+    "dnspython>=2.6.0",
+    "regex>=2024.0.0",
 ]
 
 [dependency-groups]
@@ -66,6 +71,10 @@ ignore = [
 [tool.ruff.lint.pyupgrade]
 # Preserve types, even if a file imports `from __future__ import annotations`.
 keep-runtime-typing = true
+
+[tool.ruff.lint.per-file-ignores]
+# The pipeline logs to stdout via print() so supercronic captures it in container logs.
+"pipeline/**" = ["T201"]
 
 [tool.coverage.run]
 source = ["app"]
