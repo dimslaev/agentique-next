@@ -6,26 +6,25 @@ import sys
 import time
 from datetime import UTC, datetime, timedelta
 
+from model2vec import StaticModel
 from sqlmodel import Session, create_engine, select
 
 from app.models_agentique import Article, ScoredUrl
 from baml_client import b
 from baml_client.types import ArticleInput, ExistingArticle
-from model2vec import StaticModel
-
-from pipeline.utils import log, sanitize_llm_text, strip_title_wrappers, wait_ms
+from pipeline.sources.ainews import fetch_ai_news
+from pipeline.sources.extract_content import re_extract_full_content
+from pipeline.sources.hn import fetch_hn
+from pipeline.sources.substack import fetch_substack
 from pipeline.steps import (
-    SCORE_THRESHOLD,
     PROMPT_CONTENT_CAP,
+    SCORE_THRESHOLD,
+    TRUST_BY_SOURCE,
     github_repo_from_content,
     kind_from_url,
-    to_article_inputs,
-    TRUST_BY_SOURCE,
 )
-from pipeline.sources.hn import fetch_hn
-from pipeline.sources.ainews import fetch_ai_news
-from pipeline.sources.substack import fetch_substack
-from pipeline.sources.extract_content import re_extract_full_content
+from pipeline.utils import log, sanitize_llm_text, strip_title_wrappers, wait_ms
+
 
 def _build_db_url() -> str:
     server = os.environ["POSTGRES_SERVER"]
@@ -57,6 +56,17 @@ SOURCES = [
     {"label": "AI News", "fetcher": fetch_ai_news},
     {"label": "Substack", "fetcher": fetch_substack},
 ]
+
+
+def _to_baml_input(a: dict) -> ArticleInput:
+    """Build a BAML ArticleInput from a fetched-article dict (snippet capped at 200)."""
+    return ArticleInput(
+        url=a["url"],
+        title=a["title"],
+        source=a["source"],
+        snippet=a.get("content", "")[:200] if a.get("content") else None,
+        trust=TRUST_BY_SOURCE.get(a["source"]),
+    )
 
 
 def run_pipeline() -> None:
@@ -122,8 +132,9 @@ def _filter_dead_domains(articles: list[dict], label: str) -> list[dict]:
     if not articles:
         return articles
 
-    import dns.resolver
     from urllib.parse import urlparse
+
+    import dns.resolver
 
     def is_resolvable(url: str) -> bool:
         try:
@@ -163,16 +174,7 @@ def _dedup_semantic(session: Session, articles: list[dict], label: str) -> list[
 
     log(f"  Deduplicating against {len(recent_db)} recent DB articles...")
 
-    new_inputs = [
-        ArticleInput(
-            url=a["url"],
-            title=a["title"],
-            source=a["source"],
-            snippet=a.get("content", "")[:200] if a.get("content") else None,
-            trust=TRUST_BY_SOURCE.get(a["source"]),
-        )
-        for a in articles
-    ]
+    new_inputs = [_to_baml_input(a) for a in articles]
     existing_inputs = [
         ExistingArticle(url=str(art.url), title=art.title, source=art.source)
         for art in recent_db
@@ -205,17 +207,7 @@ def _score_articles(session: Session, articles: list[dict]) -> list[dict]:
     BATCH = 5
     all_scores: list[dict] = []
     for i in range(0, len(articles), BATCH):
-        batch_articles = articles[i:i + BATCH]
-        batch_inputs = [
-            ArticleInput(
-                url=a["url"],
-                title=a["title"],
-                source=a["source"],
-                snippet=a.get("content", "")[:200] if a.get("content") else None,
-                trust=TRUST_BY_SOURCE.get(a["source"]),
-            )
-            for a in batch_articles
-        ]
+        batch_inputs = [_to_baml_input(a) for a in articles[i:i + BATCH]]
         result = b.ScoreArticles(batch_inputs)
         all_scores.extend({"url": r.url, "score": r.score} for r in result)
         log(f"    batch {i // BATCH + 1}/{(len(articles) + BATCH - 1) // BATCH} done")
@@ -296,15 +288,8 @@ def _improve_titles(session: Session, inserted: list[dict]) -> None:
 
     for item in inserted:
         art_id = item["id"]
-        input_ = [ArticleInput(
-            url=item["url"],
-            title=item["title"],
-            source=item["source"],
-            snippet=item.get("content", "")[:200] if item.get("content") else None,
-            trust=TRUST_BY_SOURCE.get(item["source"]),
-        )]
         try:
-            fixes = b.ImproveTitles(input_)
+            fixes = b.ImproveTitles([_to_baml_input(item)])
             raw = fixes[0].title if fixes else None
             if not raw:
                 continue

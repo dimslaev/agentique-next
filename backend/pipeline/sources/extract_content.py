@@ -5,8 +5,8 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import trafilatura
 
-from pipeline.utils import log
 from pipeline.sources.utils import fetch_with_timeout
+from pipeline.utils import log
 
 SKIP_DOMAINS: set[str] = {"x.com", "twitter.com"}
 SNIPPET_MAX_LENGTH = 500

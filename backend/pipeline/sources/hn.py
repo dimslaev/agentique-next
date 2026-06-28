@@ -1,13 +1,11 @@
 from __future__ import annotations
 
 import re
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from concurrent.futures import ThreadPoolExecutor
 
-import httpx
-
-from pipeline.utils import log
-from pipeline.sources.utils import clean_title, fetch_with_timeout, is_within_window
 from pipeline.sources.extract_content import extract_content
+from pipeline.sources.utils import clean_title, fetch_with_timeout, is_within_window
+from pipeline.utils import log
 
 HN_TOP = "https://hacker-news.firebaseio.com/v0/topstories.json"
 HN_ITEM = "https://hacker-news.firebaseio.com/v0/item"

@@ -4,8 +4,8 @@ from __future__ import annotations
 import re
 from html import unescape
 
-from pipeline.utils import log
 from pipeline.sources.utils import fetch_with_timeout, is_within_window
+from pipeline.utils import log
 
 FEED_URL = "https://news.smol.ai/rss.xml"
 MAX_CONTENT_LENGTH = 1400
@@ -109,11 +109,11 @@ def _is_junk(link: dict) -> bool:
 
 
 def _pick_primary(links: list[dict]) -> dict:
-    clean = [l for l in links if not _is_junk(l)]
+    clean = [lnk for lnk in links if not _is_junk(lnk)]
     if not clean:
         return {"url": "", "kind": "other"}
     for kind in PRIMARY_PRIORITY:
-        hit = next((l for l in clean if _classify_host(l["host"]) == kind), None)
+        hit = next((lnk for lnk in clean if _classify_host(lnk["host"]) == kind), None)
         if hit:
             return {"url": hit["url"], "kind": kind}
     return {"url": clean[0]["url"], "kind": "other"}

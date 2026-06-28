@@ -1,5 +1,6 @@
+from datetime import UTC, datetime
+
 import regex
-from datetime import datetime, UTC
 
 
 def log(message: str) -> None:

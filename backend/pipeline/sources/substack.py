@@ -7,8 +7,8 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 import feedparser
 import httpx
 
-from pipeline.utils import log
 from pipeline.sources.utils import BROWSER_HEADERS, clean_title, is_within_window
+from pipeline.utils import log
 
 _PROXY_URL = os.environ.get("RESIDENTIAL_PROXY_URL")
 

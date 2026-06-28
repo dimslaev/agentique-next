@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass
 
 SCORE_THRESHOLD = 76
 PROMPT_CONTENT_CAP = 1500
@@ -15,15 +14,6 @@ NON_REPO_OWNERS = {
 GITHUB_REPO_RE = re.compile(
     r'https?://(?:www\.)?github\.com/([A-Za-z0-9_.-]+)/([A-Za-z0-9_.-]+)'
 )
-
-
-@dataclass
-class ArticleInput:
-    url: str
-    title: str
-    source: str
-    snippet: str | None = None
-    trust: str | None = None
 
 
 def github_repo_from_content(content: str) -> str | None:
@@ -56,16 +46,3 @@ TRUST_BY_SOURCE: dict[str, str] = {
     "Hacker News": "high",
     "AI News": "high",
 }
-
-
-def to_article_inputs(articles: list[dict]) -> list[ArticleInput]:
-    return [
-        ArticleInput(
-            url=a["url"],
-            title=a["title"],
-            source=a["source"],
-            snippet=a.get("content", "")[:200] if a.get("content") else None,
-            trust=TRUST_BY_SOURCE.get(a["source"]),
-        )
-        for a in articles
-    ]
