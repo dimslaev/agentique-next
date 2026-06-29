@@ -26,7 +26,8 @@ export class ArticlesService {
                 since: data.since,
                 min_score: data.minScore,
                 category: data.category,
-                kind: data.kind
+                kind: data.kind,
+                sort: data.sort
             },
             errors: {
                 422: 'Validation Error'

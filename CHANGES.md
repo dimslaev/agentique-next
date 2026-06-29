@@ -4,6 +4,12 @@ Changes made on top of `fastapi/full-stack-fastapi-template`. Upstream files are
 
 ---
 
+## 2026-06-29
+
+- `backend/app/core/config.py` — `ENVIRONMENT` Literal changed from `"local"` to `"development"` (value and default); matching `== "local"` guard updated to `== "development"`. Low conflict risk (one-line change; upstream uses `"local"` as the dev environment name).
+
+---
+
 ## 2026-06-28
 
 - `frontend/src/routes/_layout.tsx` — `beforeLoad` auth guard commented out so unauthenticated users reach the layout. Low conflict risk (small, isolated block).

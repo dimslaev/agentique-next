@@ -131,6 +131,7 @@ export type ArticlesReadArticlesData = {
     limit?: number;
     minScore?: (number | null);
     since?: (string | null);
+    sort?: (string | null);
 };
 
 export type ArticlesReadArticlesResponse = (ArticlesPublic);

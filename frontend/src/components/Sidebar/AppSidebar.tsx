@@ -1,5 +1,3 @@
-import { Briefcase, Home, Users } from "lucide-react"
-
 import { SidebarAppearance } from "@/components/Common/Appearance"
 import { Logo } from "@/components/Common/Logo"
 import {
@@ -7,30 +5,33 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
+  SidebarSeparator,
 } from "@/components/ui/sidebar"
 import useAuth from "@/hooks/useAuth"
+import { SidebarFilters } from "./Filters"
 import { type Item, Main } from "./Main"
 import { User } from "./User"
 
-const baseItems: Item[] = [
-  { icon: Home, title: "Dashboard", path: "/" },
-  { icon: Briefcase, title: "Items", path: "/items" },
+const navItems: Item[] = [
+  { index: "01", title: "Feed", path: "/" },
+  { index: "02", title: "Newsletter", path: "/newsletter" },
+  { index: "03", title: "MCP", path: "/developers" },
 ]
 
 export function AppSidebar() {
   const { user: currentUser } = useAuth()
 
-  const items = currentUser?.is_superuser
-    ? [...baseItems, { icon: Users, title: "Admin", path: "/admin" }]
-    : baseItems
-
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader className="px-4 py-6 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:items-center">
-        <Logo variant="responsive" />
+      <SidebarHeader className="px-2 mb-2 max-md:hidden">
+        <Logo expandable />
       </SidebarHeader>
-      <SidebarContent>
-        <Main items={items} />
+      <SidebarContent className="overflow-hidden max-md:pt-4">
+        <Main items={navItems} />
+        <SidebarSeparator className="mx-2 opacity-100 transition-opacity group-data-[collapsible=icon]:opacity-0" />
+        <div className="w-[var(--sidebar-width)] shrink-0 overflow-hidden px-2 py-2 opacity-100 transition-opacity group-data-[collapsible=icon]:pointer-events-none group-data-[collapsible=icon]:opacity-0">
+          <SidebarFilters />
+        </div>
       </SidebarContent>
       <SidebarFooter>
         <SidebarAppearance />

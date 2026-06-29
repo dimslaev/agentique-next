@@ -5,6 +5,7 @@ from fastapi import APIRouter, Query
 from model2vec import StaticModel
 from pgvector.sqlalchemy import Vector
 from sqlalchemy import cast, func, or_
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlmodel import col, select
 
 from app.api.deps import SessionDep
@@ -42,6 +43,7 @@ def read_articles(
     min_score: int | None = Query(default=None, ge=1, le=10),
     category: str | None = None,
     kind: str | None = None,
+    sort: str = Query(default="score-desc"),
 ) -> Any:
     since_dt: datetime
     if since:
@@ -64,19 +66,16 @@ def read_articles(
         statement = statement.where(Article.kind == kind)
     if category is not None:
         statement = statement.where(
-            func.json_array_length(Article.categories) > 0  # type: ignore[arg-type]
-        ).where(
-            func.exists(
-                select(func.json_array_elements_text(Article.categories).label("cat"))  # type: ignore[arg-type]
-                .correlate(Article)
-                .where(func.json_array_elements_text(Article.categories) == category)  # type: ignore[arg-type]
-            )
+            cast(Article.categories, JSONB).contains([category])  # type: ignore[arg-type]
         )
 
     count_statement = select(func.count()).select_from(statement.subquery())
     count = session.exec(count_statement).one()
 
-    statement = statement.order_by(col(Article.score).desc()).limit(limit)
+    if sort == "published_at-desc":
+        statement = statement.order_by(col(Article.published_at).desc()).limit(limit)
+    else:
+        statement = statement.order_by(col(Article.score).desc()).limit(limit)
     articles = session.exec(statement).all()
 
     return ArticlesPublic(
@@ -107,3 +106,12 @@ def search_articles(
         data=[ArticlePublic.model_validate(a) for a in articles],
         count=len(articles),
     )
+
+
+@router.get("/stats")
+def article_stats(session: SessionDep) -> Any:
+    total = session.exec(select(func.count()).select_from(Article)).one()
+    last = session.exec(
+        select(func.max(Article.created_at))  # type: ignore[arg-type]
+    ).one()
+    return {"total": total, "lastUpdated": last.isoformat() if last else None}
