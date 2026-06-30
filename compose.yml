@@ -171,6 +171,23 @@ services:
 
       # Enable redirection for HTTP and HTTPS
       - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-http.middlewares=https-redirect
+
+      # Redirect www.${DOMAIN} to the bare domain (separate routers so the "le"
+      # resolver issues a cert for the www host too, instead of falling back
+      # to Traefik's default self-signed cert)
+      - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-www-http.rule=Host(`www.${DOMAIN?Variable not set}`)
+      - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-www-http.entrypoints=http
+      - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-www-http.middlewares=https-redirect
+
+      - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-www-https.rule=Host(`www.${DOMAIN?Variable not set}`)
+      - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-www-https.entrypoints=https
+      - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-www-https.tls=true
+      - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-www-https.tls.certresolver=le
+      - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-www-https.middlewares=${STACK_NAME?Variable not set}-www-redirect
+
+      - traefik.http.middlewares.${STACK_NAME?Variable not set}-www-redirect.redirectregex.regex=^https://www\.(.+)
+      - traefik.http.middlewares.${STACK_NAME?Variable not set}-www-redirect.redirectregex.replacement=https://$${1}
+      - traefik.http.middlewares.${STACK_NAME?Variable not set}-www-redirect.redirectregex.permanent=true
   pipeline:
     image: '${DOCKER_IMAGE_BACKEND?Variable not set}:${TAG-latest}'
     restart: always

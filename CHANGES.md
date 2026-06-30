@@ -6,6 +6,7 @@ Changes made on top of `fastapi/full-stack-fastapi-template`. Upstream files are
 
 ## 2026-06-30
 
+- `compose.yml` — Added `www-http`/`www-https` Traefik routers + a `redirectregex` middleware on the `frontend` service to 301-redirect `www.${DOMAIN}` to the bare domain. Root cause of `www.agentique.ch` failing after the `next.agentique.ch` → `agentique.ch` domain switch: there was no router matching the `www` host at all, so Traefik served its default self-signed cert and returned 404. Low conflict risk (additive labels block).
 - `compose.yml` — Added `SHELL=/bin/sh` to pipeline service environment; supercronic was inheriting `SHELL=/bin/zsh` from the host and crashing because zsh is not in the image. Added `NVIDIA_NIM_API_KEY` and `RESIDENTIAL_PROXY_URL` to deploy-production.yml env block so they are passed via compose. Low conflict risk.
 - `compose.yml` — Changed pipeline command to `supercronic -no-reap`; without this flag supercronic tries to fork/exec itself as a PID 1 process reaper and crashes immediately. Low conflict risk.
 - `backend/pipeline/crontab` — Changed `python` to `/app/.venv/bin/python` so the venv is used regardless of PATH. No conflict risk (new file).
