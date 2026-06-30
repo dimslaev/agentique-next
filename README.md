@@ -1,4 +1,4 @@
-# agentique-next
+# agentique
 
 AI-powered article aggregation and intelligence feed. Fetches articles from configured sources, scores and deduplicates them with an LLM, extracts full content, summarizes and categorizes each piece, and stores vector embeddings for semantic search.
 
