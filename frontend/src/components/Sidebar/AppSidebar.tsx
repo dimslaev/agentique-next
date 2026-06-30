@@ -15,7 +15,7 @@ import { User } from "./User"
 const navItems: Item[] = [
   { index: "01", title: "Feed", path: "/" },
   { index: "02", title: "Newsletter", path: "/newsletter" },
-  { index: "03", title: "MCP", path: "/developers" },
+  { index: "03", title: "API", path: "/developers" },
 ]
 
 export function AppSidebar() {
