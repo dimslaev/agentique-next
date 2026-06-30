@@ -64,6 +64,17 @@ export type NewPassword = {
     new_password: string;
 };
 
+export type NewsletterSubscribeRequest = {
+    email: string;
+    categories?: Array<(string)>;
+    customCategory?: string;
+    utm_source?: (string | null);
+};
+
+export type NewsletterSubscribeResponse = {
+    ok?: boolean;
+};
+
 export type Token = {
     access_token: string;
     token_type?: string;
@@ -131,7 +142,7 @@ export type ArticlesReadArticlesData = {
     limit?: number;
     minScore?: (number | null);
     since?: (string | null);
-    sort?: (string | null);
+    sort?: string;
 };
 
 export type ArticlesReadArticlesResponse = (ArticlesPublic);
@@ -142,6 +153,8 @@ export type ArticlesSearchArticlesData = {
 };
 
 export type ArticlesSearchArticlesResponse = (ArticlesPublic);
+
+export type ArticlesArticleStatsResponse = (unknown);
 
 export type ItemsReadItemsData = {
     limit?: number;
@@ -200,6 +213,12 @@ export type LoginRecoverPasswordHtmlContentData = {
 };
 
 export type LoginRecoverPasswordHtmlContentResponse = (string);
+
+export type NewsletterSubscribeData = {
+    requestBody: NewsletterSubscribeRequest;
+};
+
+export type NewsletterSubscribeResponse2 = (NewsletterSubscribeResponse);
 
 export type UsersReadUsersData = {
     limit?: number;

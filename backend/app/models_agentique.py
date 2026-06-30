@@ -50,3 +50,26 @@ class ScoredUrl(SQLModel, table=True):
     __tablename__ = "scored_url"
     url: str = Field(primary_key=True)
     created_at: datetime = Field(default_factory=get_datetime_utc)
+
+
+class NewsletterSubscriber(SQLModel, table=True):
+    __tablename__ = "newsletter_subscriber"
+    email: str = Field(primary_key=True)
+    categories: list[str] = Field(
+        default_factory=lambda: ["all"], sa_column=Column(JSON, nullable=False)
+    )
+    custom_category: str = Field(default="")
+    utm_source: str | None = Field(default=None)
+    created_at: datetime = Field(default_factory=get_datetime_utc)
+    updated_at: datetime = Field(default_factory=get_datetime_utc)
+
+
+class NewsletterSubscribeRequest(SQLModel):
+    email: str
+    categories: list[str] = Field(default_factory=lambda: ["all"])
+    customCategory: str = ""
+    utm_source: str | None = None
+
+
+class NewsletterSubscribeResponse(SQLModel):
+    ok: bool = True

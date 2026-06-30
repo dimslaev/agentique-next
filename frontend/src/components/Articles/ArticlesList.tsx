@@ -1,7 +1,7 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
-import { ArticlesService, type ArticlePublic } from "@/client"
-import { cn } from "@/lib/utils"
+import { type ArticlePublic, ArticlesService } from "@/client"
 import { useFilters } from "@/context/filters"
+import { cn } from "@/lib/utils"
 
 const PUBLISHED_DAYS: Record<string, number> = { "3d": 3, "1w": 7, "1m": 30 }
 
@@ -53,7 +53,6 @@ export function ArticlesList() {
     return (
       <ul className="divide-y divide-border/40">
         {Array.from({ length: 8 }).map((_, i) => (
-          // biome-ignore lint/suspicious/noArrayIndexKey: static placeholder list
           <ArticleSkeleton key={i} />
         ))}
       </ul>
@@ -97,10 +96,13 @@ export function ArticlesList() {
                   <>
                     <span>·</span>
                     <span>
-                      {new Date(article.published_at).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                      })}
+                      {new Date(article.published_at).toLocaleDateString(
+                        "en-US",
+                        {
+                          month: "short",
+                          day: "numeric",
+                        },
+                      )}
                     </span>
                   </>
                 )}

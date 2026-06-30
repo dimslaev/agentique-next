@@ -1,3 +1,5 @@
+import { useRouterState } from "@tanstack/react-router"
+
 import { SidebarAppearance } from "@/components/Common/Appearance"
 import { Logo } from "@/components/Common/Logo"
 import {
@@ -20,6 +22,8 @@ const navItems: Item[] = [
 
 export function AppSidebar() {
   const { user: currentUser } = useAuth()
+  const router = useRouterState()
+  const isHome = router.location.pathname === "/"
 
   return (
     <Sidebar collapsible="icon">
@@ -28,10 +32,14 @@ export function AppSidebar() {
       </SidebarHeader>
       <SidebarContent className="overflow-hidden max-md:pt-4">
         <Main items={navItems} />
-        <SidebarSeparator className="mx-2 opacity-100 transition-opacity group-data-[collapsible=icon]:opacity-0" />
-        <div className="w-[var(--sidebar-width)] shrink-0 overflow-hidden px-2 py-2 opacity-100 transition-opacity group-data-[collapsible=icon]:pointer-events-none group-data-[collapsible=icon]:opacity-0">
-          <SidebarFilters />
-        </div>
+        {isHome && (
+          <>
+            <SidebarSeparator className="mx-2 opacity-100 transition-opacity group-data-[collapsible=icon]:opacity-0" />
+            <div className="w-[var(--sidebar-width)] shrink-0 overflow-hidden px-2 py-2 opacity-100 transition-opacity group-data-[collapsible=icon]:pointer-events-none group-data-[collapsible=icon]:opacity-0">
+              <SidebarFilters />
+            </div>
+          </>
+        )}
       </SidebarContent>
       <SidebarFooter>
         <SidebarAppearance />

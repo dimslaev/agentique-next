@@ -1,6 +1,4 @@
 import { Link as RouterLink, useRouterState } from "@tanstack/react-router"
-
-import { cn } from "@/lib/utils"
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -9,6 +7,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
+import { cn } from "@/lib/utils"
 
 export type Item = {
   index: string

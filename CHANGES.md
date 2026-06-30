@@ -10,6 +10,10 @@ Changes made on top of `fastapi/full-stack-fastapi-template`. Upstream files are
 - `compose.yml` — Changed pipeline command to `supercronic -no-reap`; without this flag supercronic tries to fork/exec itself as a PID 1 process reaper and crashes immediately. Low conflict risk.
 - `backend/pipeline/crontab` — Changed `python` to `/app/.venv/bin/python` so the venv is used regardless of PATH. No conflict risk (new file).
 - `.github/workflows/deploy-production.yml` — Added `NVIDIA_NIM_API_KEY` and `RESIDENTIAL_PROXY_URL` to deploy job env block.
+- `backend/app/main.py` — Added `newsletter.router` mounted directly on `app` under `/api` (not `/api/v1`, which is reserved for the developer-facing articles API). New file `backend/app/api/routes/newsletter.py` is untouched-pattern (mirrors `articles.py`), `app/api/main.py` was not touched. Low conflict risk (two added lines).
+- `backend/pyproject.toml` — Added `resend` dependency for the newsletter subscribe feature (adds contacts to a Resend Audience). Low conflict risk (additive single line).
+- `compose.yml` — Added `RESEND_API_KEY`/`RESEND_AUDIENCE_ID` to `prestart` and `backend` service environments. Low conflict risk.
+- `.github/workflows/deploy-production.yml` — Added `RESEND_API_KEY`/`RESEND_AUDIENCE_ID` to deploy job env block, mapped from new GitHub secrets that still need to be set manually (see plans/newsletter-page.md). Low conflict risk.
 
 ---
 

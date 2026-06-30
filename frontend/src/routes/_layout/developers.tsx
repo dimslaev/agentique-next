@@ -45,38 +45,41 @@ function DevelopersPage() {
 
       <div className="space-y-6">
         <EndpointCard
-            method="GET"
-            path="/api/v1/articles"
-            description="List recent articles with optional filters."
-            params={[
-              { name: "since", description: "ISO date · default 30 days ago" },
-              { name: "limit", description: "integer · 1–50 · default 20" },
-              { name: "min_score", description: "integer · 1–10 · optional" },
-              {
-                name: "category",
-                description: "models | dev | research · optional",
-              },
-              {
-                name: "kind",
-                description:
-                  "repo | paper | model | blog | product | announcement · optional",
-              },
-              {
-                name: "sort",
-                description: "score-desc (default) | published_at-desc",
-              },
-            ]}
-          />
+          method="GET"
+          path="/api/v1/articles"
+          description="List recent articles with optional filters."
+          params={[
+            { name: "since", description: "ISO date · default 30 days ago" },
+            { name: "limit", description: "integer · 1–50 · default 20" },
+            { name: "min_score", description: "integer · 1–10 · optional" },
+            {
+              name: "category",
+              description: "models | dev | research · optional",
+            },
+            {
+              name: "kind",
+              description:
+                "repo | paper | model | blog | product | announcement · optional",
+            },
+            {
+              name: "sort",
+              description: "score-desc (default) | published_at-desc",
+            },
+          ]}
+        />
 
-          <EndpointCard
-            method="GET"
-            path="/api/v1/articles/search"
-            description="Semantic search over articles using natural language."
-            params={[
-              { name: "q", description: "string · required · natural language query" },
-              { name: "limit", description: "integer · 1–50 · default 20" },
-            ]}
-          />
+        <EndpointCard
+          method="GET"
+          path="/api/v1/articles/search"
+          description="Semantic search over articles using natural language."
+          params={[
+            {
+              name: "q",
+              description: "string · required · natural language query",
+            },
+            { name: "limit", description: "integer · 1–50 · default 20" },
+          ]}
+        />
       </div>
 
       <div className="space-y-3">

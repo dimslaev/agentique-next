@@ -1,8 +1,7 @@
-import { useEffect, useRef, useState } from "react"
 import { Search, X } from "lucide-react"
-
-import { cn } from "@/lib/utils"
+import { useEffect, useRef, useState } from "react"
 import { useFilters } from "@/context/filters"
+import { cn } from "@/lib/utils"
 
 const DATE_OPTIONS = [
   { value: "3d", label: "Last 3 days" },
@@ -53,12 +52,12 @@ function FilterGroup({
           key={o.value}
           type="button"
           onClick={() => onChange(o.value)}
-        className={cn(
-          "flex shrink-0 items-center gap-2.5 rounded-sm px-2 py-[3px] text-xs transition-colors whitespace-nowrap",
-          o.value === value
-            ? "text-foreground"
-            : "text-muted-foreground hover:text-foreground",
-        )}
+          className={cn(
+            "flex shrink-0 items-center gap-2.5 rounded-sm px-2 py-[3px] text-xs transition-colors whitespace-nowrap",
+            o.value === value
+              ? "text-foreground"
+              : "text-muted-foreground hover:text-foreground",
+          )}
         >
           <span
             className={cn(
