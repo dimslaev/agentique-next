@@ -122,7 +122,7 @@ export function SubscribeForm() {
                     type="button"
                     variant={categories.includes(cat) ? "default" : "outline"}
                     size="sm"
-                    className="rounded-full capitalize"
+                    className="capitalize"
                     onClick={() => toggleCategory(cat)}
                   >
                     {cat}

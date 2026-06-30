@@ -14,7 +14,7 @@ function Newsletter() {
   return (
     <div className="flex flex-col gap-8">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">
+        <h1 className="text-2xl font-semibold tracking-tight">
           Every AI story that matters. For devs.
         </h1>
         <p className="text-muted-foreground mt-2">

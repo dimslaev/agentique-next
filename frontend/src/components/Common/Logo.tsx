@@ -10,7 +10,7 @@ interface LogoProps {
 }
 
 const box =
-  "inline-flex h-8 items-center justify-center md:border md:border-foreground/20 font-mono text-sm font-medium lowercase text-foreground"
+  "inline-flex h-8 items-center justify-center font-mono text-sm font-medium lowercase text-foreground"
 
 export function Logo({
   className,

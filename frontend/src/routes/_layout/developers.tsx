@@ -31,7 +31,7 @@ function DevelopersPage() {
   return (
     <div className="space-y-10">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">API Reference</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">API Reference</h1>
         <p className="mt-2 text-sm text-muted-foreground">
           REST API for curated AI news. No authentication required.
         </p>
