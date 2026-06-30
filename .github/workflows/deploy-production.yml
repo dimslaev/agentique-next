@@ -81,6 +81,8 @@ jobs:
       BACKEND_CORS_ORIGINS: ${{ secrets.BACKEND_CORS_ORIGINS }}
       SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
       BAML_LOG: ${{ secrets.BAML_LOG }}
+      NVIDIA_NIM_API_KEY: ${{ secrets.NVIDIA_NIM_API_KEY }}
+      RESIDENTIAL_PROXY_URL: ${{ secrets.RESIDENTIAL_PROXY_URL }}
     steps:
       - name: Checkout
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
