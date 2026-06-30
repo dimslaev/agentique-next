@@ -188,7 +188,7 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD?Variable not set}
       - NVIDIA_NIM_API_KEY=${NVIDIA_NIM_API_KEY}
       - RESIDENTIAL_PROXY_URL=${RESIDENTIAL_PROXY_URL}
-    command: supercronic /app/backend/pipeline/crontab
+    command: supercronic -no-reap /app/backend/pipeline/crontab
 
 volumes:
   app-db-data:
