@@ -180,6 +180,7 @@ services:
     env_file:
       - .env
     environment:
+      - SHELL=/bin/sh
       - POSTGRES_SERVER=db
       - POSTGRES_PORT=${POSTGRES_PORT}
       - POSTGRES_DB=${POSTGRES_DB}

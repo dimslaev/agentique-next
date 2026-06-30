@@ -1,1 +1,1 @@
-0 4 * * * cd /app/backend && python -m pipeline.run
+0 4 * * * cd /app/backend && /app/.venv/bin/python -m pipeline.run
