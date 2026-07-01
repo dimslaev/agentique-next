@@ -11,21 +11,6 @@ function cutoffIso(days: number): string {
   return d.toISOString()
 }
 
-function ArticleSkeleton() {
-  return (
-    <li className="py-5 animate-pulse">
-      <div className="flex items-center gap-2 mb-2">
-        <div className="h-3 w-16 rounded bg-muted" />
-        <div className="h-3 w-8 rounded bg-muted" />
-        <div className="h-3 w-10 rounded bg-muted" />
-      </div>
-      <div className="h-4 w-3/4 rounded bg-muted mb-2" />
-      <div className="h-3 w-full rounded bg-muted mb-1" />
-      <div className="h-3 w-5/6 rounded bg-muted" />
-    </li>
-  )
-}
-
 export function ArticlesList() {
   const { filters } = useFilters()
   const { search, dateRange, sort, category, kind } = filters
@@ -50,13 +35,7 @@ export function ArticlesList() {
   })
 
   if (isLoading) {
-    return (
-      <ul className="divide-y divide-border/40">
-        {Array.from({ length: 8 }).map((_, i) => (
-          <ArticleSkeleton key={i} />
-        ))}
-      </ul>
-    )
+    return null
   }
 
   if (isError || !data) {
@@ -117,7 +96,7 @@ export function ArticlesList() {
                 href={article.url ?? "#"}
                 target="_blank"
                 rel="noreferrer"
-                className="text-sm font-medium hover:underline"
+                className="font-medium hover:underline"
               >
                 {article.title}
               </a>

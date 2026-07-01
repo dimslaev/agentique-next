@@ -30,7 +30,7 @@ export function AppSidebar() {
       <SidebarHeader className="px-2 mb-2 max-md:hidden">
         <Logo expandable />
       </SidebarHeader>
-      <SidebarContent className="overflow-hidden max-md:pt-4">
+      <SidebarContent className="overflow-x-hidden max-md:pt-4">
         <Main items={navItems} />
         {isHome && (
           <>
