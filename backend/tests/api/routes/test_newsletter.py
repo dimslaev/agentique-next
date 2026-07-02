@@ -11,7 +11,12 @@ NEWSLETTER_URL = "/api/newsletter/subscribe"
 def test_subscribe_valid_email_defaults_to_all(
     client: TestClient, db: Session, monkeypatch
 ) -> None:
-    monkeypatch.setattr(resend.Contacts, "create", lambda *args, **kwargs: None)
+    monkeypatch.setenv("RESEND_API_KEY", "test-key")
+    monkeypatch.setenv("RESEND_AUDIENCE_ID", "test-audience")
+    calls = []
+    monkeypatch.setattr(
+        resend.Contacts, "create", lambda payload: calls.append(payload)
+    )
     email = random_email()
 
     r = client.post(NEWSLETTER_URL, json={"email": email})
@@ -21,6 +26,7 @@ def test_subscribe_valid_email_defaults_to_all(
     subscriber = db.get(NewsletterSubscriber, email)
     assert subscriber is not None
     assert subscriber.categories == ["all"]
+    assert calls == [{"email": email, "audience_id": "test-audience"}]
 
     db.delete(subscriber)
     db.commit()

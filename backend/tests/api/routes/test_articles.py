@@ -85,6 +85,15 @@ def test_read_articles_since_narrows_results(client: TestClient) -> None:
     assert narrow_ids <= wide_ids
 
 
+def test_read_articles_malformed_since_falls_back_to_default_window(
+    client: TestClient,
+) -> None:
+    default = client.get(f"{ARTICLES_URL}/").json()
+    malformed = client.get(f"{ARTICLES_URL}/", params={"since": "not-a-date"}).json()
+
+    assert malformed["count"] == default["count"]
+
+
 def test_search_articles(
     client: TestClient, db: Session, monkeypatch: pytest.MonkeyPatch
 ) -> None:

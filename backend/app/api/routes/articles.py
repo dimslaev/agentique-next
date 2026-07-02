@@ -4,7 +4,7 @@ from typing import Any
 from fastapi import APIRouter, Query
 from model2vec import StaticModel
 from pgvector.sqlalchemy import Vector
-from sqlalchemy import cast, func, or_
+from sqlalchemy import cast, func
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlmodel import col, select
 
@@ -17,14 +17,14 @@ router = APIRouter(prefix="/articles", tags=["articles"])
 _model: StaticModel | None = None
 
 
-def get_model() -> StaticModel:
+def get_model() -> StaticModel:  # pragma: no cover
     global _model
     if _model is None:
         _model = StaticModel.from_pretrained("minishlab/potion-base-8M")
     return _model
 
 
-def _embed(text: str) -> list[float]:
+def _embed(text: str) -> list[float]:  # pragma: no cover
     import numpy as np
 
     model = get_model()
