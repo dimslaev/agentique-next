@@ -4,6 +4,16 @@ Changes made on top of `fastapi/full-stack-fastapi-template`. Upstream files are
 
 ---
 
+## 2026-07-02 — regenerate frontend client
+
+- `frontend/src/client/{schemas,sdk,types}.gen.ts` — Regenerated via `scripts/generate-client.sh`;
+  the committed client was stale and missing the `private` router's types/methods (now mounted in
+  `development`, see the `api/main.py` fix below), which the `pre-commit` `generate-frontend-sdk`
+  hook caught once its own missing-`.env` issue was fixed. `schemas.gen.ts`/`sdk.gen.ts` also pick
+  up the current `@hey-api/openapi-ts` version's default formatting (single quotes, no trailing
+  commas) — `frontend/biome.json` excludes `src/client/**` from formatting, so this is the
+  generator's raw, unmodified output. No conflict risk (generated files, safe to regenerate).
+
 ## 2026-07-01 — CI fixes for the no-auth Agentique app
 
 - **Real root cause of red CI (found via live workflow run logs, not just static reading):**
