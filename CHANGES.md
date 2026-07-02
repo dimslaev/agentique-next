@@ -4,6 +4,27 @@ Changes made on top of `fastapi/full-stack-fastapi-template`. Upstream files are
 
 ---
 
+## 2026-07-02 — mypy/ty fixes (pre-commit's type-checker hooks)
+
+- `backend/app/models_agentique.py`, `backend/app/api/routes/articles.py` — Added
+  `# type: ignore[import-untyped]` on the `pgvector.sqlalchemy` import; pgvector ships no type
+  stubs/`py.typed` marker, and `mypy`'s `local-mypy` pre-commit hook (`uv run mypy backend/app`,
+  run from the repo root) never discovers `backend/pyproject.toml`'s `[tool.mypy]` config to begin
+  with — this had simply never been exercised in CI before, since the missing-`.env` failures
+  always short-circuited the pipeline earlier. Also reordered an unrelated pre-existing
+  alphabetization issue in the same import block (`sqlalchemy import` line) that `ruff check`
+  flags once the file is touched. Low conflict risk (comment + import order only).
+- `backend/app/api/routes/articles.py` — Added matching `# ty: ignore[...]` comments next to the
+  existing `# type: ignore[...]` ones on the `Article.score`/`Article.embedding` query-building
+  lines. `ty` (Astral's type checker, also run via `pre-commit`) doesn't yet recognize SQLAlchemy's
+  declarative-attribute-as-query-operator pattern the way mypy does with its SQLAlchemy plugin, so
+  it flags `Article.score.is_not(...)` etc. as attribute/operator errors on the `int | None`
+  annotation — a known false positive for this pattern, not a real bug. Verified clean with
+  `ty check --python-version 3.14` (CI's actual interpreter). Low conflict risk (comments only).
+- `backend/app/seed_articles.py` — `session.execute(delete(Article))` → `session.exec(...)`,
+  per `ty`'s deprecation warning; `Session.exec` supports `Delete` statements directly. No
+  conflict risk (new file).
+
 ## 2026-07-02 — regenerate frontend client
 
 - `frontend/src/client/{schemas,sdk,types}.gen.ts` — Regenerated via `scripts/generate-client.sh`;

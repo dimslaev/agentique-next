@@ -3,7 +3,7 @@ from typing import Any
 
 from fastapi import APIRouter, Query
 from model2vec import StaticModel
-from pgvector.sqlalchemy import Vector
+from pgvector.sqlalchemy import Vector  # type: ignore[import-untyped]
 from sqlalchemy import cast, func
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlmodel import col, select
@@ -56,12 +56,12 @@ def read_articles(
 
     statement = (
         select(Article)
-        .where(Article.score.is_not(None))  # type: ignore[union-attr]
+        .where(Article.score.is_not(None))  # type: ignore[union-attr]  # ty: ignore[unresolved-attribute]
         .where(col(Article.published_at) >= since_dt)
     )
 
     if min_score is not None:
-        statement = statement.where(Article.score >= min_score)  # type: ignore[operator]
+        statement = statement.where(Article.score >= min_score)  # type: ignore[operator]  # ty: ignore[unsupported-operator]
     if kind is not None:
         statement = statement.where(Article.kind == kind)
     if category is not None:
@@ -94,8 +94,8 @@ def search_articles(
 
     statement = (
         select(Article)
-        .where(Article.score.is_not(None))  # type: ignore[union-attr]
-        .where(Article.embedding.is_not(None))  # type: ignore[union-attr]
+        .where(Article.score.is_not(None))  # type: ignore[union-attr]  # ty: ignore[unresolved-attribute]
+        .where(Article.embedding.is_not(None))  # type: ignore[union-attr]  # ty: ignore[unresolved-attribute]
         .order_by(cast(Article.embedding, Vector(256)).cosine_distance(query_vec))
         .limit(limit)
     )

@@ -63,7 +63,7 @@ def make_sample_articles() -> list[Article]:
 
 
 def seed(session: Session) -> None:
-    session.execute(delete(Article))
+    session.exec(delete(Article))
     session.add_all(make_sample_articles())
     session.commit()
 
